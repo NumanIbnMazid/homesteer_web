@@ -1,0 +1,24 @@
+.scrollable{
+    height: 430px;
+    overflow: scroll;
+}
+.scrollable-sm{
+    height: 200px;
+    overflow: scroll;
+}
+.scrollable-md{
+    height: 430px;
+    overflow: scroll;
+}
+.alert-error{
+    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    font-weight: 700;
+    color: darkslategray;
+    font-style: italic;
+}
+.help-text{
+    font-size: 11px !important;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: rgb(16, 22, 71) !important;
+    margin-top: 2px !important;
+}

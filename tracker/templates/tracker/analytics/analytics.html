@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% if request.user.is_authenticated %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Analytics
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+
+
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">Member Data Analytics</h2>
+        <p>{{ object }}</p>
+        <p class="text-danger">
+            {% for object in object_list %}
+            <li class="alert alert-info text-dark">
+                {{object.cost}} <br>
+                {{ object.tracker_field }} <br>
+                {{ object.get_members }} <br>
+            </li>
+            {% endfor %}
+        </p>
+    </header>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-condensed mb-none">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Company</th>
+                        <th class="text-right">Price</th>
+                        <th class="text-right">Change</th>
+                        <th class="text-right">Change %</th>
+                        <th class="text-right">Open</th>
+                        <th class="text-right">High</th>
+                        <th class="text-right">Low</th>
+                        <th class="text-right">Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AAC</td>
+                        <td>AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
+                        <td class="text-right">$1.38</td>
+                        <td class="text-right">-0.01</td>
+                        <td class="text-right">-0.36%</td>
+                        <td class="text-right">$1.39</td>
+                        <td class="text-right">$1.39</td>
+                        <td class="text-right">$1.38</td>
+                        <td class="text-right">9,395</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

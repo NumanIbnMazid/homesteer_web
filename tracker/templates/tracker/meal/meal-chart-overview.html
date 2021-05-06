@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% if request.user.is_authenticated and request.user.membership %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+{{request.user.membership.room}} Member's Meal Chart of {% now "M Y" %}
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h5 class="card-header text-center">
+        Meal chart of <span class="text-primary">{% now "M Y" %}</span>
+    </h5>
+    <div class="card-body table-responsive ">
+        <table class="table table-bordered text-center bg-light">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    {% for member in members %}
+                    <th scope="col">
+                        <a href="{% url 'profile_public' slug=member.user.profile.slug %}">
+                            {% include 'snippets/chunks/user/user-image.html' with instance=member.user class="user-avatar-md rounded-circle" %}
+                            <span>
+                                {{member.user.profile.get_smallname}}
+                            </span>
+                        </a>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for date in dates reversed %}
+                <tr
+                {% if time|date:"d-M-Y" == date|date:"d-M-Y" %}
+                class="table-success"
+                {% endif %}
+                >
+                    <td class="text-primary">{{date|date:"M d"}}</td>
+
+                    {% for member in members %}
+                        {% for object in object_list %}
+                            {% if object.member == member and object.meal_date == date %}
+                                {% if object.meal_today == None %}
+                                    <td class="text-dark">
+                                        <a href="#" class="btn btn-link collapsed" data-toggle="collapse"
+                                            data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
+                                            -
+                                        </a>
+                                        {% if is_modifier and time|date:"d-M-Y" == date|date:"d-M-Y" and not object.member.user == request.user %}
+                                        <br>
+                                        <a href="{% url 'tracker:meal_update_admin' slug=object.slug %}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% endif %}
+                                        <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+                                            <small>
+                                                Confirmed by: 
+                                                <i class="text-muted">{{ object.confirmed_by.user.profile.get_smallname }}</i>
+                                                <br>
+                                                Updated at:
+                                                <i class="text-muted">{{ object.updated_at }}</i>
+                                            </small>
+                                        </div>
+                                    </td>
+                                {% else %}
+                                    <td class="text-dark">
+                                        <a href="#" class="btn btn-link collapsed" data-toggle="collapse"
+                                            data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
+                                            {{object.meal_today}}
+                                        </a>
+                                        {% if is_modifier and time|date:"d-M-Y" == date|date:"d-M-Y" and not object.member.user == request.user %}
+                                        <br>
+                                        <a href="{% url 'tracker:meal_update_admin' slug=object.slug %}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% endif %}
+                                        <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+                                            <small>
+                                                Confirmed by: 
+                                                <i class="text-muted">{{ object.confirmed_by.user.profile.get_smallname }}</i>
+                                                <br>
+                                                Updated at:
+                                                <i class="text-muted">{{ object.updated_at }}</i>
+                                            </small>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td width="80%" class="text-muted">
+                        No Meals Added for this month !
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-center">
+                        <span class="text-secondary">
+                            Total 
+                        </span>
+                        <br>
+                        <span class="text-primary">
+                            [{{time|date:"M"}} 01 - {{time|date:"M d"}}]
+                        </span>
+                    </td>
+                    {% for total in totals %}
+                        {% for member in members %}
+                            {% if member == total.member %}
+                                {% if total.get_total_meal == None %}
+                                    <td class="text-secondary text-center">0</td>
+                                {% else %}
+                                    <td class="text-secondary text-center">
+                                        {{ total.get_total_meal }}
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="text-dark text-center">
+                        Grand Total <br>
+                        [{{time|date:"M"}} 01 - {{time|date:"M d"}}]: <br>
+                        <b><i>{{total_meal_room}}</i></b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% if next_month_meal %}
+<div class="card">
+    <h5 class="card-header text-center">
+        Meal chart of <span class="text-primary">{{next_date|date:"M Y"}}</span>
+    </h5>
+    <div class="card-body table-responsive ">
+        <table class="table table-bordered text-center bg-light">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    {% for member in members %}
+                    <th scope="col">
+                        <a href="{% url 'profile_public' slug=member.user.profile.slug %}">
+                            {% include 'snippets/chunks/user/user-image.html' with instance=member.user class="user-avatar-md rounded-circle" %}
+                            <span>
+                                {{member.user.profile.get_smallname}}
+                            </span>
+                        </a>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-primary">{{next_date|date:"M d"}}</td>
+                    {% for meal in next_month_meal %}
+                        {% if meal.meal_date == next_date %}
+                            {% if meal.meal_today == None %}
+                                <td class="text-dark">-</td>
+                            {% else %}
+                                <td class="text-dark">{{meal.meal_today}}</td>
+                            {% endif %}
+                        {% endif %}
+                    {% empty %}
+                    <span>No Meal Added</span>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endif %}
+<!-- end: page -->
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

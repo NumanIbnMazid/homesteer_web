@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load cool_paginate %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Search Result
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        {% if query %}
+        <div class="col-12">
+            <h4>
+                <span class="text-primary">{{ count }}</span>
+                match found for '<b class="text-dark">{{ query }}</b>'
+                <hr>
+            </h4>
+        </div>
+        {% else %}
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+            {% include 'search/search-form.html' %}
+        </div>
+        <div class="col-12">
+            <hr>
+        </div>
+        {% endif %}
+        <div class="row">
+            {% for obj in object_list %}
+            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                {% include 'rooms/snippets/list-card.html' with instance=obj %}
+            </div>
+            {% empty %}
+            <div class="text-center">
+                <h6 class="text-danger">
+                    Sorry, No match found !
+                </h6>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if count > 0 %}
+<div class="text-center">
+    {% cool_paginate %}
+</div>
+{% endif %}
+
+{% endblock %}

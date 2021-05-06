@@ -1,0 +1,105 @@
+{% load cool_paginate %}
+<div class="card">
+    <h5 class="card-header text-center">
+        {{user.profile.get_smallname}}'s Shopping List of <span class="text-primary">{% now "F Y" %}</span>
+    </h5>
+    <div class="card-body table-responsive ">
+        <table class="table table-bordered text-center bg-light">
+            <thead>
+                <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Quantity Unit</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shopping in shoppings %}
+                <tr>
+                    <td class="text-dark">{{shopping.item}}</td>
+                    <td class="text-muted">{{shopping.date|date:"M d"}}</td>
+                    <td class="text-dark">
+                        {% if shopping.quantity == None %}
+                        -
+                        {% else %}
+                        {{shopping.quantity}}
+                        {% endif %}
+                    </td>
+                    <td class="text-muted">
+                        {% if shopping.quantity_unit == None %}
+                        -
+                        {% else %}
+                        {{shopping.quantity_unit}}
+                        {% endif %}
+                    </td>
+                    <td class="text-primary">{{shopping.cost}}</td>
+                    <td>
+                        {% if time|date:"M-Y" == shopping.created_at|date:"M-Y" %}
+                            <a href="{% url 'tracker:shopping_update' slug=shopping.slug %}" class="btn btn-success btn-xs">
+                                Update
+                            </a> <br>
+                            <a href="{% url 'tracker:shopping_delete' slug=shopping.slug %}" class="btn btn-danger btn-xs mt-1">
+                                Delete
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td width="80%" class="text-muted">
+                            No Shopping Added for this month !
+                        </td>
+                        <td>
+                            <a href="{% url 'tracker:shopping_create' %}" class="btn btn-info btn-xs">
+                                Add Shopping
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-secondary">
+                        Total:
+                    </td>
+                    <td class="text-secondary">
+                        {{total.get_total_shopping}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% if count > 7 %}
+        <div class="text-center mt-3">
+            {% cool_paginate page_obj=shoppings %}
+        </div>
+        {% endif %}
+    </div>
+    {% if is_creator == True %}
+    <div class="container bg-light mb-2">
+        {% if room_setting.shopping_type == 0 %}
+        <small>
+            Your room shopping type is currently 
+            <span class="text-primary">"INDIVIDUAL MEMBER DEPENDENT SHOPPING"</span>.
+            It means that all the members of your room are responsible and bound for shopping.
+            If you want that only Room Managers should responsible for shopping then select
+            <span class="text-primary">"ROOM MANAGER DEPENDENT SHOPPING"</span> by
+            <a href="{% url 'rooms:managerial_setting' %}">Changing Shopping Type</a>
+        </small>
+        {% else %}
+        <small>
+            Your room shopping type is currently 
+            <span class="text-primary">"ROOM MANAGER DEPENDENT SHOPPING"</span>.
+            It means that only Room Managers are responsible and bound for shopping.
+            If you want that all the members of your room should responsible for shopping then select
+            <span class="text-primary">"INDIVIDUAL MEMBER DEPENDENT SHOPPING"</span> by
+            <a href="{% url 'rooms:managerial_setting' %}">Changing Shopping Type</a>
+        </small>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

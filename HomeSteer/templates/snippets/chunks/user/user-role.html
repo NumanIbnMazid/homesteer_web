@@ -1,0 +1,16 @@
+{% if instance.membership %}
+    {% if instance.membership.role == 0 %}
+    <small class="bg-light text-success">Member</small>
+    {% endif %}
+    {% if instance.membership.role == 1 %}
+    <small class="bg-light text-info">Supervisor</small>
+    {% endif %}
+    {% if instance.membership.role == 2 and not instance.creator %}
+    <small class="bg-light text-warning">Manager</small>
+    {% endif %}
+    {% if instance.membership.role == 2 and instance.creator %}
+    <small class="bg-light text-danger">Super Manager</small>
+    {% endif %}
+{% else %}
+<small class="bg-light text-dark">No Room Associated</small>
+{% endif %}

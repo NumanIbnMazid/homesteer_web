@@ -1,0 +1,50 @@
+===== Blood Brothers TODO ======
+Name should be with automation
+1.  Chatting System
+2.  User Post, Like, Comment
+
+======== Important ========
+* Declare Site Name Globally and use in template lige Login Page of Allauth
+* Help text for all forms
+* Paginator behaving same in room (member and member request)
+* Cost will be shown for specific user. Not publicly.
+* If today's meal not entered a mail will be sent to the user to enter meal
+* Option for auto entry meal if not entered meal today and send mail to user to enter meal
+* Check Meal Entry is correctly happening after deploying in server to check timezone
+* Two option to bajar. One for one time bajar, another for specific user bajar
+* Option for admin meal, bajar update
+* Database trigger on time
+* Give ownership of the room, new owner role will be 2, and room creator and will remove previous user from room creator
+* Change Profile View from Grid To Responsive Table
+
+======== NOTES ========
+* Shopping:
+    - Shopping Individual
+    - 
+
+
+======= Logistic ======
+1.  Create Room Groups to store multiple room within same creator
+2.  Bua system for premium membership
+3.  Meal Facility Premium Membership.
+4.  Room Booking or To-Let Premium Membership.
+
+======= TODO TOMORROW ========
+    * Next Month meal show in meal chart collapsable
+    * Auto Entry Meal
+    * What happen if user not insert meal for specific day
+    * request manager to update meal
+    * Detail to user to join another room notification or float pannel
+    * Event on Admin Meal generate
+    * Total Calculate i Cost Chart
+    * Define common cost sector for all user with value
+    * Integrate TensorBoard and TensorFlow
+
+==== Questionnaires ==
+* Should I update slug with update of title?
+
+
+=====
+Cost Sector - Extra Cost
+Cash Deposit Field- Deposit Category/ Deposit Type
+Chart will be expandable

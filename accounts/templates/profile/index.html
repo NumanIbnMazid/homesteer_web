@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% if request.user.is_authenticated %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+{% if user.get_full_name %}
+{{ user.get_full_name }}
+{% else %}
+{{ user.profile.user }}
+{% endif %}'s Profile
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 col-lg-3">
+        <section class="card">
+            <div class="card-body text-center">
+                <div class="thumb-info mb-md">
+                    {% include 'snippets/chunks/user/user-image.html' with instance=user class="rounded-circle user-avatar-xl" %}
+                </div>
+                <hr class="dotted short">
+                <h4 class="text-muted text-dark text-center">
+                    {{ user.profile.get_username }}
+                </h4>
+
+                <p class="card-subtitle text-muted mb-3 font-italic">{{ user.email }}</p>
+                <span class="badge badge-light">
+                    {% include 'snippets/chunks/user/user-role.html' with instance=user %}
+                </span>
+                <hr class="dotted short">
+
+                <div class="social-icons-list">
+                    {% if user.profile.facebook %}
+                    <a rel="tooltip" data-placement="bottom" target="_blank" href="{{ user.profile.facebook }}"
+                        data-original-title="Facebook">
+                        <i class="fab fa-facebook"></i><span> Facebook </span>
+                    </a>
+                    <hr>
+                    {% endif %}
+                    {% if user.profile.linkedin %}
+                    <a rel="tooltip" data-placement="bottom" target="_blank" href="{{ user.profile.linkedin }}"
+                        data-original-title="Linkedin">
+                        <i class="fab fa-linkedin"></i><span> Linkedin </span>
+                    </a>
+                    <hr>
+                    {% endif %}
+                    {% if user.profile.website %}
+                    <a rel="tooltip" data-placement="bottom" target="_blank" href="{{ user.profile.website }}"
+                        data-original-title="Website">
+                        <i class="fas fa-globe"></i><span> Website </span>
+                    </a>
+                    <hr>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header p-4">
+                <div class="float-right">
+                    <a href="{% url 'profile_update' slug=user.profile.slug %}" class="btn btn-light btn-sm">
+                        Update Profile <i class="fa fa-edit"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5>Account Information</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <div class="mb-2">Username</div>
+                        <div class="mb-2">Email</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-dark mb-2">{{ user.profile.user }}</div>
+                        <div class="text-dark">
+                            {% for emailaddress in user.emailaddress_set.all %}
+                            <span class="profile-info">
+                                {{ emailaddress.email }} <br>
+                            </span>
+                            <div>
+                                {% if emailaddress.verified %}
+                                <span class="text-success">{% trans "[Verified]" %}</span>
+                                {% else %}
+                                <span class="text-danger">{% trans "[Not Verified]" %}</span>
+                                {% endif %}
+                                {% if emailaddress.primary %}
+                                <span class="text-primary">{% trans "[Primary]" %}</span>
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <span class="profile-info">{{ user.email }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h5>Personal Information</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        {% if user.first_name %}
+                        <div class="mb-2">First Name</div>
+                        {% endif %}
+                        {% if user.last_name %}
+                        <div class="mb-2">Last Name</div>
+                        {% endif %}
+                        <div class="mb-2">Full Name</div>
+                        {% if user.profile.gender %}
+                        <div class="mb-2">Gender</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-sm-6">
+                        {% if user.first_name %}
+                        <div class="text-dark mb-2">{{ user.first_name }}</div>
+                        {% endif %}
+                        {% if user.last_name %}
+                        <div class="text-dark mb-2">{{ user.last_name }}</div>
+                        {% endif %}
+                        <div class="text-dark mb-2">{{ user.profile.get_username }}</div>
+                        {% if user.profile.gender %}
+                        <div class="text-dark mb-2">
+                            {% if user.profile.gender == 'M' %}
+                            Male
+                            {% endif %}
+                            {% if user.profile.gender == 'F' %}
+                            Female
+                            {% endif %}
+                            {% if user.profile.gender == 'O' %}
+                            Other
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if user.profile.contact or user.profile.address %}
+                <hr>
+                <h5>Contact Information</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        {% if user.profile.contact %}
+                        <div class="mb-2">Mobile</div>
+                        {% endif %}
+                        {% if user.profile.address %}
+                        <div class="mb-2">Address</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        {% if user.profile.contact %}
+                        <div class="text-dark mb-2">{{ user.profile.contact }}</div>
+                        {% endif %}
+                        {% if user.profile.address %}
+                        <div class="text-dark mb-2">{{ user.profile.address }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if user.profile.about %}
+                <hr>
+                <h5>About</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        {% if user.profile.about %}
+                        <div class="mb-2">More About You</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        {% if user.profile.about %}
+                        <div class="text-dark mb-2">{{ user.profile.about|safe }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'profile_update' slug=user.profile.slug %}" class="btn btn-light btn-xs btn-block">
+                    Update Profile <i class="fa fa-edit"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-3">
+
+        <h4 class="mb-md">Extra Information</h4>
+        <div class="card">
+            <div class="card-body">
+                {% if user.membership.room %}
+                <li>
+                    Joined Room:
+                    <strong class="text-dark">
+                        <h3>
+                            <a href="{% url 'rooms:room_detail' slug=user.membership.room.slug %}">
+                                {{ user.membership.room }}
+                            </a>
+                        </h3>
+                    </strong>
+                </li>
+                {% endif %}
+                <li>
+                    Your are with us since
+                    <strong class="text-dark">{{ user.date_joined|timesince }}</strong>
+                </li>
+                {% if user.socialaccount_set != null %}
+                {% for account in user.socialaccount_set.all %}
+                <li>
+                    You are logged in from
+                    <strong class="text-dark">{{ account.provider }}</strong>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        {% for emailaddress in user.emailaddress_set.all %}
+
+        {% if not emailaddress.verified %}
+        <div class="card bg-warning">
+            <div class="card-body">
+                <p>Your email
+                    <span class="text-dark">{{ emailaddress.email }}</span>
+                    is Not Verified !
+                    <a href="{% url 'account_email' %}" class="btn btn-dark btn-xs">
+                        Verify Email
+                    </a>
+                </p>
+
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        <h4 class="mb-md">Activity</h4>
+        <ul class="">
+            {% if user.is_active %}
+            <li class="">
+                <span>Account Status: </span>
+                <span class="text-success">Active</span>
+            </li>
+            {% else %}
+            <li class="">
+                <span>Account Status: </span>
+                <span class="text-danger">Disabled</span>
+            </li>
+            {% endif %}
+            <li class="">
+                <span>Last Logged in: </span>
+                <span class="text-primary">{{ user.last_login }}</span>
+            </li>
+            <li class="">
+                <span>Profile Updated at: </span>
+                <span class="text-primary">{{ user.profile.updated_at }}</span>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<!-- end: page -->
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

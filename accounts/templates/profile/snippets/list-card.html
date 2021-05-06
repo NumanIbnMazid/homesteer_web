@@ -1,0 +1,40 @@
+{% load static %}
+<div class="card card-figure has-hoverable">
+    <!-- .card-figure -->
+    <figure class="figure">
+        <!-- .figure-img -->
+        <div class="figure-img">
+            {% include 'snippets/chunks/user/user-image.html' with instance=object.user class="rounded-circle user-avatar-xl" %}
+            <div class="figure-tools">
+                <small>
+                    {% if object.user.membership.room %}
+                    <a href="{% url 'rooms:room_detail' slug=object.user.membership.room.slug %}" class="text-warning text-uppercase btn-xs btn-dark">
+                        {{ object.user.membership.room|truncatechars_html:12 }}
+                    </a>
+                    {% else %}
+                    <span class="text-dark">No Room Associated</span>
+                    {% endif %}
+                </small>
+            </div>
+            <div class="figure-action">
+                <a href="{% url 'profile_public' slug=object.user.profile.slug %}" class="btn btn-block btn-sm btn-dark">
+                    View Profile
+                </a>
+            </div>
+        </div>
+        <!-- /.figure-img -->
+        <figcaption class="figure-caption">
+            <ul class="list-inline d-flex text-muted mb-0">
+                <li class="list-inline-item mr-auto text-dark">
+                    {{ object.user.profile.get_smallname|truncatechars_html:12 }}
+                </li>
+                {% if request.user == object.user %}
+                <li class="list-inline-item text-secondary">
+                    <i class="fas fa-universal-access"></i>
+                </li>
+                {% endif %}
+            </ul>
+        </figcaption>
+    </figure>
+    <!-- /.card-figure -->
+</div>

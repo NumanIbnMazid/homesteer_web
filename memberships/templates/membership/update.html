@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% if request.user.is_authenticated %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Update {{ object.user.profile.get_smallname|truncatechars_html:12 }}'s Membership
+{% endblock %}{% endblock %}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        <ul class="nav">
+            <li>
+                <a href="{% url 'rooms:room_detail' slug=object.room.slug %}" class="btn btn-primary btn-xs">
+                    Room Overview <i class="fa fa-home"></i>
+                </a>
+            </li>
+        </ul>
+        <div class="card">
+            <div class="card-body">
+                <div class="form">
+                    <form class="form-horizontal" method="POST">
+                        {% csrf_token %}
+                        <fieldset>
+                            {% include 'snippets/form.html' %}
+                        </fieldset>
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary btn-sm" type="submit">
+                                <i class="fa fa-edit"></i> Update Membership
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-danger btn-xs"
+            data-toggle="modal" data-target="#removeMembership">
+            Remove Membership <i class="fa fa-minus-square"></i>
+        </button>
+    </div>
+</div>
+
+{% include 'membership/snippets/modals.html' %}
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

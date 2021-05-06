@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load cool_paginate %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+All Rooms
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="row">
+            {% for obj in object_list %}
+            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                {% if obj.is_active %}
+
+                {% include 'rooms/snippets/list-card.html' with instance=obj %}
+
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="alert alert-warning">
+                Currently there are no rooms available !
+            </div>
+            {% endfor %}
+        </div>
+        {% if total_rooms >= 12 %}
+        <div class="text-center">
+            {% cool_paginate page_obj=obj %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<p class="text-muted text-right text-primary">
+    Total Rooms: {{ total_rooms }} ||
+    Public Rooms: {{ public_rooms }} ||
+    Total Members: {{ total_members }}
+</p>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+{{ object.title }} Room Details
+{% endblock %}{% endblock %}Page{% endblock %}
+{% if request.user.is_authenticated %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        {% include 'rooms/snippets/detail-card.html' with instance=object %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

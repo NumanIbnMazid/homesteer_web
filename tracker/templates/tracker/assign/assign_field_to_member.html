@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% if request.user.is_authenticated %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Allocate Cost Sector To {{ member|truncatechars_html:12 }}
+{% endblock %}{% endblock %}{% endblock %}
+
+{% block content %}
+
+{% if cost_sector_exists %}
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        <ul class="nav">
+            <li>
+                <a href="{% url 'rooms:room_detail' slug=request.user.membership.room.slug %}" class="btn btn-primary btn-xs">
+                    Room Overview <i class="fa fa-home"></i>
+                </a>
+            </li>
+        </ul>
+        <div class="card">
+            <div class="card-body">
+                <div class="form">
+                    <form class="form" method="POST">
+                        {% csrf_token %}
+                        <fieldset>
+                            {% include 'snippets/form.html' %}
+                        </fieldset>
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary btn-sm" type="submit">
+                                <i class="fa fa-plus-circle"></i> Allocate
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-3">
+        User Cost Sectors
+    </div>
+</div>
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    There are no cost sectors to allocate. Please create cost sector first !
+</div>
+{% endif %}
+<!-- end: page -->
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

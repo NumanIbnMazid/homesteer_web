@@ -1,0 +1,57 @@
+<header>
+    <h6 class="text-muted">
+        <i class="fa fa-user"></i>
+        <b><i>Members </i></b>
+        <span class="badge badge-primary badge-pill">
+            {{ total_members }}
+        </span>
+    </h6>
+</header>
+<div class="row {% if total_members > 6 %}scrollable{% endif %} ml-2">
+    {% for member in members %}
+    <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card card-figure has-hoverable">
+            <!-- .card-figure -->
+            <figure class="figure text-center">
+                <!-- .figure-img -->
+                <div class="figure-img">
+                    {% include 'snippets/chunks/user/user-image.html' with instance=member.user class="rounded-circle user-avatar-xl" %}
+                    {% if is_modifier and not member.user.creator %}
+                    <div class="figure-tools">
+                        <a href="{% url 'memberships:member_update' slug=member.slug %}" class="tile tile-circle tile-sm mr-auto">
+                            <span class="btn btn-block btn-xs btn-brand">
+                                <small>Update Membership</small>
+                            </span>
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="figure-action">
+                        <a href="{% url 'profile_public' slug=member.user.profile.slug %}" class="btn btn-block btn-xs btn-primary">View
+                            Profile
+                        </a>
+                    </div>
+                </div>
+                <!-- /.figure-img -->
+                <!-- .figure-caption -->
+                <figcaption class="figure-caption">
+                    <h6 class="figure-title">
+                        <p>{{ member.user.profile.get_smallname|truncatechars_html:15 }}</p>
+                    </h6>
+                    <span class="badge badge-default">
+                        {% include 'snippets/chunks/user/user-role.html' with instance=member.user %}
+                    </span> <br>
+                    {% if is_modifier and has_tracker %}
+                    <a href="{% url 'tracker:assign_field_to_member' slug=member.slug %}" class="btn btn-dark btn-xs active">
+                        <small>Allocate Cost Sector</small>
+                    </a>
+                    {% endif %}
+                </figcaption>
+                <!-- /.figure-caption -->
+            </figure>
+            <!-- /.card-figure -->
+        </div>
+    </div>
+    {% empty %}
+    <span class="text-warning">There are no members !</span>
+    {% endfor %}
+</div>

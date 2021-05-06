@@ -1,0 +1,91 @@
+<div class="table-responsive bg-white">
+    <table class="table">
+        <thead>
+            <tr class="text-center">
+                <th scope="col">Member</th>
+                <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td class="">
+                    <div class="accrodion-regular">
+                        <div id="accordion">
+                            <div class="" id="heading{{forloop.counter}}">
+                                <h5 class="mb-0">
+                                    <a href="#" class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
+                                        <i class="fas fa-angle-down"></i>
+                                    </a>
+                                    <span class="btn btn-link">
+                                        <a href="{% url 'profile_public' slug=member.user.profile.slug %}">
+                                            {% include 'snippets/chunks/user/user-image.html' with instance=member.user class="user-avatar-md rounded-circle" %}
+                                            <span>
+                                                {{member.user.profile.get_smallname}}
+                                            </span>
+                                        </a>
+                                    </span>
+                                </h5>
+                            </div>
+                            <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+                                <table class="table table-bordered text-center bg-light">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Item</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Quantity Unit</th>
+                                            <th scope="col">Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for object in object_list %}
+                                            {% if object.created_by == member %}
+                                                <tr>
+                                                    <td class="text-dark">{{object.item}}</td>
+                                                    <td class="text-muted">{{object.date|date:"M d"}}</td>
+                                                    <td class="text-dark">
+                                                        {% if object.quantity == None %}
+                                                        -
+                                                        {% else %}
+                                                        {{object.quantity}}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-muted">
+                                                        {% if object.quantity_unit == None %}
+                                                        -
+                                                        {% else %}
+                                                        {{object.quantity_unit}}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-primary">{{object.cost}}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% empty %}
+                                            <tr>
+                                                <td>No Shopping Added !</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                {% for total in totals %}
+                    {% if total.member == member %}
+                        <td class="text-secondary text-center">
+                            {{total.get_total_shopping}}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            <tr class="text-center text-dark">
+                <td>Grand Total:</td>
+                <td><b><i>{{ room_total_shopping.get_total_shopping_room }}</i></b></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,62 @@
+{% load static %}
+<div class="row">
+    <!-- -------------------- admin and anonymous view ------------------ -->
+    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
+        <!-- maintainers -->
+        <header>
+            <h6 class="text-muted">
+                <i class="fa fa-eye"></i>
+                <b><i>Maintainers</i></b>
+                <span class="badge badge-primary badge-pill">
+                    {{ maintainers_count }}
+                </span>
+            </h6>
+        </header>
+        <div class="{%if is_maintainer%}scrollable-sm{%endif%}{%if maintainers_count > 2 and not is_maintainer %}scrollable{%endif%}">
+            <div class="m-1">
+                {% include 'rooms/snippets/chunks/maintainers.html' %}
+            </div>
+        </div>
+        <!-- room-info for maintainers -->
+        {% if is_maintainer %}
+            {% include 'rooms/snippets/chunks/room-info.html' %}
+        {% endif %}
+    </div>
+    <!-- -------------------- admin and anonymous view ------------------ -->
+    <!-- members -->
+    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 mt-2 bg-light">
+        <div class="m-2">
+            {% include 'rooms/snippets/chunks/members.html' %}
+        </div>
+    </div>
+    <!-- -------------------- anonymous view ------------------ -->
+    <!-- room-info for members -->
+    {% if not is_maintainer %}
+    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
+        {% include 'rooms/snippets/chunks/room-info.html' %}
+    </div>
+    {% endif %}
+    <!-- -------------------- admin view ------------------ -->
+    <!-- member-requests -->
+    {% if is_maintainer and member_requests_count >= 1 %}
+    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12 mt-2">
+        <header>
+            <h6 class="text-muted">
+                <i class="fa fa-eye"></i>
+                <b><i>Join Requests</i></b>
+                <span class="badge badge-primary badge-pill">
+                    {{ member_requests_count }}
+                </span>
+            </h6>
+        </header>
+        <div class="{% if member_requests_count >= 3 %}scrollable{% endif %}">
+            <div class="m-2">
+                {% include 'rooms/snippets/chunks/member-requests.html' %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- modals -->
+{% include 'rooms/snippets/chunks/modals.html' %}

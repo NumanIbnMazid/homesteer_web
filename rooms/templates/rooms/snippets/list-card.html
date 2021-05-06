@@ -1,0 +1,49 @@
+{% load static %}
+<div class="card card-figure has-hoverable">
+    <!-- .card-figure -->
+    <figure class="figure">
+        <!-- .figure-img -->
+        <div class="figure-img">
+            <img class="img-fluid" src="{% static 'images/raw/home.png' %}" alt="Card image cap">
+            <div class="figure-description">
+                <p class="text-muted">
+                    <small>
+                        <span class="text-primary">Creator: </span>
+                        <a href="{% url 'profile_public' slug=instance.creator.profile.slug %}" class="text-muted">
+                            {{ instance.creator.profile.get_smallname|truncatechars_html:12 }}
+                        </a>
+                    </small>
+                </p>
+            </div>
+            <div class="figure-tools">
+                <a href="{{ instance.get_absolute_url }}" class="text-warning text-uppercase btn-xs btn-dark">
+                    view details
+                </a>
+            </div>
+            <div class="figure-action">
+                {% if not request.user.membership and not is_pending_member %}
+                <a href="{% url 'memberships:member_request_create' slug=instance.slug %}" class="btn btn-block btn-sm btn-primary">
+                    Join Room
+                </a>
+                {% endif %}
+                {% if request.user.member_request.room == instance %}
+                <small><i class="text-secondary">Request Pending</i></small>
+                {% endif %}
+            </div>
+        </div>
+        <!-- /.figure-img -->
+        <figcaption class="figure-caption">
+            <ul class="list-inline d-flex text-muted mb-0">
+                <li class="list-inline-item mr-auto text-dark">
+                    {{ instance.title|truncatechars_html:19 }}
+                </li>
+                {% if request.user.membership.room == instance %}
+                <li class="list-inline-item text-secondary">
+                    <i class="fas fa-universal-access"></i>
+                </li>
+                {% endif %}
+            </ul>
+        </figcaption>
+    </figure>
+    <!-- /.card-figure -->
+</div>

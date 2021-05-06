@@ -1,0 +1,29 @@
+<h4 class="text-center text-dark">Cash Deposit Fields</h4>
+<hr>
+<ul class="">
+    <div class="row">
+        {% for field in deposit_fields %}
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+            <li class="mb-2">
+                <strong class="text-dark">
+                    <small>{{ forloop.counter }}.</small>
+                    {{ field.title }}
+                    <br>
+                    <span>
+                        <a href="{% url 'tracker:deposit_field_update' slug=field.slug %}" class="btn btn-success btn-xs">
+                            Update <i class="fa fa-edit"></i>
+                        </a>
+                    </span>
+                    <span>
+                        <a href="{% url 'tracker:deposit_field_delete' slug=field.slug %}" class="btn btn-danger btn-xs">
+                            Delete <i class="fa fa-trash"></i>
+                        </a>
+                    </span>
+                </strong>
+            </li>
+        </div>
+        {% empty %}
+        <strong class="text-dark">There has no deposit fields yet ! Please add some.</strong>
+        {% endfor %}
+    </div>
+</ul>

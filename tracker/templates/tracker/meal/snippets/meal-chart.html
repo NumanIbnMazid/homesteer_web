@@ -1,0 +1,146 @@
+{% load cool_paginate %}
+{% load tags %}
+{% if request.user.membership %}
+{% meal_slug_tag as meal_slug %}
+{% endif %}
+
+<div class="card">
+    <h5 class="card-header text-center">
+        {{member}}'s Meal chart of <span class="text-primary">{{time|date:"F, Y"}}</span>
+    </h5>
+    <div class="card-body table-responsive ">
+        <table class="table table-bordered text-center bg-light">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Meal</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meals in member_meals %}
+                <tr
+                {% if time|date:"d-M-Y" == meals.meal_date|date:"d-M-Y" %}
+                class="table-success"
+                {% endif %}
+                >
+                    <td class="text-primary">{{meals.meal_date|date:"M d"}}</td>
+                    {% if meals.meal_today == None %}
+                        <td class="text-dark">-</td>
+                    {% else %}
+                    <td class="text-dark">
+                        {{meals.meal_today}}
+                    </td>
+                    {% endif %}
+                    <td>
+                        {% if time|date:"d-M-Y" == meals.meal_date|date:"d-M-Y" %}
+                        <a href="{% url 'tracker:meal_update' slug=meal_slug %}" class="btn btn-success btn-xs">
+                            Update
+                        </a>
+                        <span>
+                            <a href="{% url 'tracker:meal_update_request' slug=meals.slug %}" class="btn btn-dark btn-xs">
+                                Update Request
+                            </a>
+                        </span>
+                        {% endif %}
+                        {% if meals.meal_date|date:"d" < time|date:"d" %}
+                        <a href="{% url 'tracker:meal_update_request' slug=meals.slug %}" class="btn btn-dark btn-xs">
+                            Update Request
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td width="80%" class="text-muted">
+                            No Meals Added for this month !
+                        </td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'tracker:meal_create' %}" class="btn btn-info btn-xs">
+                                Add Meal
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-center">
+                        <span class="text-secondary">
+                            Total:
+                        </span>
+                        <br>
+                        <span class="text-primary">
+                            [{{time|date:"M"}} 01 - {{time|date:"M d"}}]
+                        </span>
+                    </td>
+                    <td class="text-secondary text-center">
+                        {{total.get_total_meal}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% if count > 7 %}
+        <div class="text-center mt-3">
+            {% cool_paginate page_obj=member_meals %}
+        </div>
+        {% endif %}
+    </div>
+    {% if last_meal.auto_entry == True %}
+    <div class="container bg-light">
+        <i class="text-center">
+            <span class="text-primary">"Auto Entry"</span>
+            is very Useful and it Saves your Time.
+        </i> <br>
+        <h6>
+            You Enabled <span class="text-primary">"Auto Entry"</span>
+            with Value of <span class="text-primary">"{{last_meal.auto_entry_value}}".</span>
+            It means that, <span class="text-primary">"{{last_meal.auto_entry_value}}"</span>
+            {% if last_meal.auto_entry_value >= 2 %}
+            Meals
+            {% else %}
+            Meal
+            {% endif %}
+            will be added Everyday Automatically. You can Change your Meal on Regular Basis.
+            <br>
+            <span class="text-dark">
+                If you want to Disable <span class="text-primary">"Auto Entry"</span>,
+                keep <span class="text-primary">"Auto Entry Value"</span>
+                Blank and Update Meal.
+            </span>
+        </h6>
+    </div>
+    {% endif %}
+</div>
+
+{% if tomorrow_meal %}
+<div class="card">
+    <div class="card-header" id="headingEight">
+        <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                <span class="fas mr-3 fa-angle-down"></span>
+                {{tomorrow_meal.member.user.profile.get_smallname}}'s Meal chart of <span class="text-primary">{{tomorrow_meal.meal_date|date:"F, Y"}}</span>
+            </button>       
+        </h5>
+    </div>
+    <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordion3" style="">
+        <div class="card-body">
+            <table class="table table-bordered text-center bg-light">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Meal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td class="text-primary">{{tomorrow_meal.meal_date|date:"M d"}}</td>
+                        <td class="text-dark">{{tomorrow_meal.meal_today}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}

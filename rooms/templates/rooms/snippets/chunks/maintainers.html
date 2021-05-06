@@ -1,0 +1,55 @@
+{% if instance.creator %}
+<div class="card card-figure">
+    <!-- .card-figure -->
+    <figure class="figure text-center">
+        <!-- .figure-img -->
+        <div class="figure-img">
+            {% include 'snippets/chunks/user/user-image.html' with instance=instance.creator class="rounded-circle user-avatar-xl" %}
+            <div class="figure-action">
+                <a href="{% url 'profile_public' slug=instance.creator.profile.slug %}" class="btn btn-block btn-sm btn-primary">View
+                    Profile</a>
+            </div>
+        </div>
+        <!-- /.figure-img -->
+        <!-- .figure-caption -->
+        <figcaption class="figure-caption">
+            <h6 class="figure-title">
+                <p>{{ instance.creator.profile.get_smallname|truncatechars_html:15 }}</p>
+            </h6>
+            <span class="badge badge-danger">Super Manager</span>
+        </figcaption>
+        <!-- /.figure-caption -->
+    </figure>
+    <!-- /.card-figure -->
+</div>
+{% endif %}
+
+{% for member in members %}
+{% if member.role == 1 or member.role == 2 and not member.user.creator %}
+<div class="card card-figure">
+    <!-- .card-figure -->
+    <figure class="figure text-center">
+        <!-- .figure-img -->
+        <div class="figure-img">
+            {% include 'snippets/chunks/user/user-image.html' with instance=member.user class="img-fluid" %}
+            <div class="figure-action">
+                <a href="{% url 'profile_public' slug=member.user.profile.slug %}" class="btn btn-block btn-sm btn-primary">View
+                    Profile</a>
+            </div>
+        </div>
+        <!-- /.figure-img -->
+        <!-- .figure-caption -->
+        <figcaption class="figure-caption">
+            <h6 class="figure-title">
+                <p>{{ member.user.profile.get_smallname|truncatechars_html:15 }}</p>
+            </h6>
+            <span class="badge badge-default">
+                {% include 'snippets/chunks/user/user-role.html' with instance=member.user %}
+            </span>
+        </figcaption>
+        <!-- /.figure-caption -->
+    </figure>
+    <!-- /.card-figure -->
+</div>
+{% endif %}
+{% endfor %}

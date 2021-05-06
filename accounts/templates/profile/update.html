@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% if request.user.is_authenticated %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Update 
+{% if user.get_full_name %}
+{{ user.get_full_name|truncatechars_html:35 }}
+{% else %}
+{{ user.profile.user|truncatechars_html:35 }}
+{% endif %}'s Profile
+{% endblock %}{% endblock %}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="tabs">
+                    <ul class="nav nav-tabs tabs-primary">
+                        <li>
+                            <a href="{% url 'profile' slug=user.profile.slug %}" class="btn btn-light btn-sm">
+                                Overview <i class="fa fa-user"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="edit" class="form">
+                            <form class="form-horizontal" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <fieldset>
+                                    {% include 'snippets/form.html' %}
+                                </fieldset>
+                                <div class="col-sm-12 text-right">
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        Update My Profile <i class="fa fa-edit"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+        
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-md text-center">Account Actions</h4>
+                <a href="{% url 'account_change_password' %}">
+                    <p class="text-dark mb-3">
+                        <i class="fa fa-edit"></i> Change Password
+                    </p>
+                </a>
+                <a href="{% url 'account_email' %}" class="">
+                    <p class="text-dark">
+                        <i class="fa fa-edit"></i> Add or Remove Email
+                    </p>
+                    <p class="text-dark">
+                        <i class="fa fa-edit"></i> Update Primary Email
+                    </p>
+                    <p class="text-dark">
+                        <i class="fa fa-edit"></i> Resend Email Verification
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

@@ -1,0 +1,61 @@
+<div class="card">
+    <h5 class="card-header text-center text-secondary">
+        Pending Meals For Update
+        <span class="badge badge-primary badge-pill">
+            {{ requested_meals.count }}
+        </span>
+    </h5>
+    <div class="card-body">
+        <table class="table table-hover table-responsive">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col"><small>Meal to Change</small></th>
+                    <th scope="col"><small>Requested to</small></th>
+                    <th scope="col"><small>Meal Date</small></th>
+                    <th scope="col"><small>Meal Now</small></th>
+                    <th scope="col"><small>Action</small></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requested_meals %}
+                <tr>
+                    <td class="text-center text-success">
+                        {{request.meal_should_be}}
+                    </td>
+                    <td>
+                        <a href="{% url 'profile_public' slug=request.request_to.user.profile.slug %}">
+                            {% include 'snippets/chunks/user/user-image.html' with instance=request.request_to.user class="user-avatar-md rounded-circle" %}
+                            <span>
+                                <small>{{request.request_to.user.profile.get_smallname}}</small>
+                            </span>
+                        </a>
+                    </td>
+                    {% for meal in meals %}
+                        {% if meal.slug == request.slug %}
+                        <td class="text-center text-primary">
+                            <small>{{meal.meal_date}}</small>
+                        </td>
+                            {% if meal.meal_today == None %}
+                            <td class="text-center">-</td>
+                            {% else %}
+                            <td class="text-center">
+                                {{meal.meal_today}}
+                            </td>
+                            {% endif %}
+                        <td class="text-center">
+                            <a href="{% url 'tracker:meal_update_request_cancel' slug=meal.slug %}">
+                                <small>Cancel <i class="fas fa-trash"></i></small>
+                            </a>
+                        </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% empty %}
+                <span class="text-warning">
+                    No meal pending for update
+                </span>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

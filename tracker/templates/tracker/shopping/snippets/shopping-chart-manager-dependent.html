@@ -1,0 +1,87 @@
+<div class="card-body table-responsive ">
+    <table class="table table-bordered text-center bg-light">
+        <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Date</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Quantity Unit</th>
+                <th scope="col">Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if room_setting.shopping_type == 0 %}
+                {% for shopping in managerial_shop %}
+                <tr>
+                    <td class="text-dark">{{shopping.item}}</td>
+                    <td class="text-muted">{{shopping.date|date:"M d"}}</td>
+                    <td class="text-dark">
+                        {% if shopping.quantity == None %}
+                        -
+                        {% else %}
+                        {{shopping.quantity}}
+                        {% endif %}
+                    </td>
+                    <td class="text-muted">
+                        {% if shopping.quantity_unit == None %}
+                        -
+                        {% else %}
+                        {{shopping.quantity_unit}}
+                        {% endif %}
+                    </td>
+                    <td class="text-primary">{{shopping.cost}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td width="80%" class="text-muted">
+                        No Monthly Shopping Added for this month !
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                {% for object in object_list %}
+                <tr>
+                    <td class="text-dark">{{object.item}}</td>
+                    <td class="text-muted">{{object.date|date:"M d"}}</td>
+                    <td class="text-dark">
+                        {% if object.quantity == None %}
+                        -
+                        {% else %}
+                        {{object.quantity}}
+                        {% endif %}
+                    </td>
+                    <td class="text-muted">
+                        {% if object.quantity_unit == None %}
+                        -
+                        {% else %}
+                        {{object.quantity_unit}}
+                        {% endif %}
+                    </td>
+                    <td class="text-primary">{{object.cost}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td width="80%" class="text-muted">
+                        No Monthly Shopping Added for this month !
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-secondary">
+                    Total:
+                </td>
+                <td class="text-secondary">
+                    {{room_total_shopping.get_total_monthly_shopping}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

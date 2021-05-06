@@ -1,0 +1,94 @@
+
+def get_object(self):
+    slug = self.kwargs['slug']
+    meal_filter = Meal.objects.filter(slug=slug)
+    if meal_filter.exists():
+        try:
+            meal_instance = Meal.objects.get(slug=slug)
+        except Meal.DoesNotExist:
+            raise Http404("Not Found !!!")
+        except Meal.MultipleObjectsReturned:
+            meal_instance = meal_filter.first()
+        except:
+            raise Http404("Something went wrong !!!")
+    else:
+        meal_instance = None
+    return meal_instance
+
+
+
+
+def get_object(self):
+    slug            = self.request.user.membership.slug
+    now             = datetime.datetime.now()
+    member_filter   = Membership.objects.filter(slug=slug)
+    if member_filter.exists():
+        member_instance     = Membership.objects.get(slug=slug)
+        meals               = Meal.objects.all()
+        existed_meal_filter = Meal.objects.filter(
+                        Q(meal_date__day=now.day, meal_date__month=now.month, meal_date__year=now.year),
+                        member=member_instance
+                        )
+        if existed_meal_filter.exists():
+            existed_meal_check = Meal.objects.get(
+                        Q(meal_date__day=now.day, meal_date__month=now.month, meal_date__year=now.year),
+                        member=member_instance
+                        )
+            return existed_meal_check
+    return None
+
+
+
+# Auto Entry Defination Starts
+day_range           = calendar.monthrange(now.year, now.month)[1]
+now_day_binding     = int(now.day) + 2
+auto_day_binding    = int(day_range) - 1
+if day_range > now_day_binding:
+    day_binding     = now_day_binding
+else:
+    day_binding     = int(now.day)
+def daterange(start_date, end_date):
+    for n in range(int ((end_date - start_date).days) + 1):
+        yield start_date + datetime.timedelta(n)
+start_date          = datetime.date(now.year, now.month, day_binding)
+end_date            = datetime.date(now.year, now.month, day_range)
+if now.day == auto_day_binding:
+    auto_entry          = False
+    auto_entry_value    = None
+    messages.add_message(self.request, messages.WARNING,
+    "Auto entry is not workable in last two days of month! Please change it from next month.")
+slug_binding = member_instance.user.username.lower()+'-'+str(single_date.strftime("%d"))+'-'+time_str_mix_slug()
+# Auto Entry Defination Ends
+
+
+
+# Add Member
+Instead of ForeignKey I used ManyToMany and class Relationship
+
+class Person(AbstractBaseUser, PermissionsMixin):
+... things here...
+relationships = models.ManyToManyField('self', through='Relationship',
+                                           symmetrical=False,
+                                           related_name='related_to')
+and class
+
+class Relationship(models.Model):
+from_person = models.ForeignKey(Person, related_name='from_people')
+to_person = models.ForeignKey(Person, related_name='to_people')
+To add user in my view I have this
+
+def add_friend(request, username):
+    if request.user.is_authenticated():
+        user = Person.objects.get_by_natural_key(username)
+        Relationship.objects.get_or_create(
+            from_person=request.user,
+            to_person=user)
+        return HttpResponseRedirect('/profile/')
+and to show list of users
+
+def show_friends(request, username):
+    user = Person.objects.get_by_natural_key(username)
+    rel = user.relationships.filter(
+        to_people__from_person=user)
+    args = {'friends': rel}
+    return render(request, "profile/friend_list.html", args)

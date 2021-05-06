@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+{{ object.user.profile.get_smallname }}'s Public Profile
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 col-lg-3">
+        <section class="card">
+            <div class="card-body text-center">
+                <div class="thumb-info mb-md">
+                    {% include 'snippets/chunks/user/user-image.html' with instance=object.user class="rounded-circle user-avatar-xl" %}
+                </div>
+                <hr class="dotted short">
+                <h4 class="text-muted text-dark text-center">
+                    {{ object.user.profile.get_username }}
+                </h4>
+                <span class="badge badge-light">
+                    {% include 'snippets/chunks/user/user-role.html' with instance=object.user %}
+                </span>
+                <hr class="dotted short">
+
+                <div class="social-icons-list">
+                    {% if object.user.profile.facebook %}
+                    <a rel="tooltip" data-placement="bottom" target="_blank" href="{{ object.user.profile.facebook }}"
+                        data-original-title="Facebook">
+                        <i class="fab fa-facebook"></i><span> Facebook </span>
+                    </a>
+                    <hr>
+                    {% endif %}
+                    {% if object.user.profile.linkedin %}
+                    <a rel="tooltip" data-placement="bottom" target="_blank" href="{{ object.user.profile.linkedin }}"
+                        data-original-title="Linkedin">
+                        <i class="fab fa-linkedin"></i><span> Linkedin </span>
+                    </a>
+                    <hr>
+                    {% endif %}
+                    {% if object.user.profile.website %}
+                    <a rel="tooltip" data-placement="bottom" target="_blank" href="{{ object.user.profile.website }}"
+                        data-original-title="Website">
+                        <i class="fas fa-globe"></i><span> Website </span>
+                    </a>
+                    <hr>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            {% if request.user.is_authenticated and modifier %}
+            <div class="card-header p-4">
+                <div class="float-right">
+                    <a href="{% url 'profile_update' slug=object.user.profile.slug %}" class="btn btn-light btn-sm">
+                        Update Profile <i class="fa fa-edit"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5>Personal Information</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        {% if object.user.first_name %}
+                        <div class="mb-2">First Name</div>
+                        {% endif %}
+                        {% if object.user.last_name %}
+                        <div class="mb-2">Last Name</div>
+                        {% endif %}
+                        <div class="mb-2">Full Name</div>
+                        {% if object.user.profile.gender %}
+                        <div class="mb-2">Gender</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-sm-6">
+                        {% if object.user.first_name %}
+                        <div class="text-dark mb-2">{{ object.user.first_name }}</div>
+                        {% endif %}
+                        {% if object.user.last_name %}
+                        <div class="text-dark mb-2">{{ object.user.last_name }}</div>
+                        {% endif %}
+                        <div class="text-dark mb-2">{{ object.user.profile.get_username }}</div>
+                        {% if object.user.profile.gender %}
+                        <div class="text-dark mb-2">
+                            {% if object.user.profile.gender == 'M' %}
+                            Male
+                            {% endif %}
+                            {% if object.user.profile.gender == 'F' %}
+                            Female
+                            {% endif %}
+                            {% if object.user.profile.gender == 'O' %}
+                            Other
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if object.user.profile.contact or object.user.profile.address %}
+                <hr>
+                <h5>Contact Information</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        {% if object.user.profile.contact %}
+                        <div class="mb-2">Mobile</div>
+                        {% endif %}
+                        {% if object.user.profile.address %}
+                        <div class="mb-2">Address</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        {% if object.user.profile.contact %}
+                        <div class="text-dark mb-2">{{ object.user.profile.contact }}</div>
+                        {% endif %}
+                        {% if object.user.profile.address %}
+                        <div class="text-dark mb-2">{{ object.user.profile.address }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if object.user.profile.about %}
+                <hr>
+                <h5>About</h5>
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        {% if object.user.profile.about %}
+                        <div class="mb-2">More About You</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        {% if object.user.profile.about %}
+                        <div class="text-dark mb-2">{{ object.user.profile.about|safe }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% if request.user.is_authenticated and modifier %}
+            <div class="card-footer bg-white">
+                <a href="{% url 'profile_update' slug=object.user.profile.slug %}" class="btn btn-light btn-xs btn-block">
+                    Update Profile <i class="fa fa-edit"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-3">
+
+        <h4 class="mb-md">Additional Information</h4>
+        {% if object.user.membership.room %}
+        <div class="card">
+            <div class="card-body">
+                <li>
+                    Joined Room:
+                    <strong class="text-dark">
+                        <h3>
+                            <a href="{% url 'rooms:room_detail' slug=object.user.membership.room.slug %}">
+                                {{ object.user.membership.room }}
+                            </a>
+                        </h3>
+                    </strong>
+                </li>
+            </div>
+        </div>
+        {% endif %}
+
+        <h4 class="mb-md">Activity</h4>
+        <ul class="">
+            <li class="">
+                <span>Last Logged in: </span>
+                <span class="text-primary">{{ object.user.last_login }}</span>
+            </li>
+            <li class="">
+                <span>Date Joined: </span>
+                <span class="text-primary">{{ object.user.date_joined }}</span>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<!-- end: page -->
+
+{% endblock %}

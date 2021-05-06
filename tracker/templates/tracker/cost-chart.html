@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% if request.user.is_authenticated and request.user.membership %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Member's Cost Chart of {{request.user.membership.room}} Room
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        {% if fields.count >= 1 %}
+        <div class="card">
+            <h5 class="card-header text-center">
+                Member's Cost Table
+            </h5>
+            <div class="card-body table-responsive ">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col" class="text-muted">Member</th>
+                            {% for field in fields %}
+                            <th scope="col" class="text-dark">
+                                {{field.title}}
+                            </th>
+                            {% endfor %}
+                            <th scope="col" class="text-secondary">
+                                Total
+                            </th>
+                            {% if is_modifier %}
+                            <th scope="col" class="text-muted">
+                                Action
+                            </th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'profile_public' slug=member.user.profile.slug %}">
+                                    {% include 'snippets/chunks/user/user-image.html' with instance=member.user class="user-avatar-md rounded-circle" %}
+                                    <span>
+                                        {{member.user.profile.get_smallname}}
+                                    </span>
+                                </a>
+                            </td>
+
+                            {% for object in object_list %}
+                                {% if member == object.member %}
+                                    <td class="text-center text-dark">{{object.cost}}</td>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for total in totals %}
+                                {% if member == total.member %}
+                                    <td class="text-center text-secondary">
+                                        {{total.get_total_cost_sector}}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if is_modifier %}
+                            <td class="text-center">
+                                <a href="{% url 'tracker:assign_field_to_member' slug=member.slug %}" class="btn btn-dark btn-xs active">
+                                    Allocate Cost
+                                </a>
+                            </td>
+                            {% endif %}
+
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="text-dark text-center">
+                                Grand Total: <br>
+                                <b><i>{{total_cost_room}}</i></b>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            There is no Cost Sector yet !
+            <span class="text-success">
+                <a href="{% url 'tracker:tracker_create' %}">
+                    Create
+                </a>
+            </span> first.
+        </div>
+        {% endif %}
+    </div>
+</div>
+<!-- end: page -->
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

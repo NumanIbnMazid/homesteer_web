@@ -1,0 +1,81 @@
+{% load static %}
+{% url 'home' as home_url %}
+{% url 'account_signup' as signup_url %}
+{% url 'account_login' as login_url %}
+{% url 'account_logout' as logout_url %}
+{% url 'profile' slug=user.profile.slug as profile_url %}
+{% url 'rooms:room_detail' slug=member.room.slug as room_url %}
+
+<!-- ============================================================== -->
+<!-- navbar -->
+<!-- ============================================================== -->
+<div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+        <!-- <img src="{% static 'images/logo/logo.png' %}" height="20px" width="20px" alt="HomeSteer" class=""> -->
+        <a class="navbar-brand" href="{{ home_url }}">
+            HomeSteer
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+                <i class="fas fa-angle-double-down"></i>
+            </span>
+        </button>
+        <div class="collapse navbar-collapse " id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto navbar-right-top">
+                <!-- search form -->
+                <li class="nav-item">
+                    <div id="custom-search" class="top-search-bar">
+                        {% include 'search/search-form.html' %}
+                    </div>
+                </li>
+                <!-- Notifications -->
+                {% if not notifications == None %}
+                    {% include 'snippets/chunks/notification.html' %}
+                {% endif %}
+                <!-- Signup Login -->
+                {% if not request.user.is_authenticated %}
+                    <li class="nav-item nav-link">
+                        <a href="{{ signup_url }}" class="btn btn-primary btn-xs">
+                            <i class="fa fa-plus-circle"></i> Signup
+                        </a>
+                    </li>
+                    <li class="nav-item nav-link">
+                        <a href="{{ login_url }}" class="btn btn-success btn-xs">
+                            <i class="fa fa-location-arrow"></i> Login
+                        </a>
+                    </li>
+                {% endif %}
+                <!-- User Profile Room Logout -->
+                {% if request.user.is_authenticated %}
+                <li class="nav-item dropdown nav-user">
+                    <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {% include 'snippets/chunks/user/user-image.html' with instance=user class="user-avatar-md rounded-circle" %}
+                        <small>{{ user.profile.get_smallname|truncatechars_html:10 }}</small>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+                        <div class="nav-user-info">
+                            <h5 class="mb-0 text-white nav-user-name">
+                                {{ user.profile.get_username|truncatechars_html:31 }}
+                            </h5>
+                            <span class="status"></span>
+                            <span class="badge badge-light">
+                                {% include 'snippets/chunks/user/user-role.html' with instance=user %}
+                            </span>
+                        </div>
+                        <a class="dropdown-item" href="{{ profile_url }}"><i class="fas fa-user mr-2"></i>My Profile</a>
+                        {% if member.room.slug %}
+                            <a class="dropdown-item" href="{{ room_url }}"><i class="fas fa-home mr-2"></i>My Room</a>
+                        {% endif %}
+                        <a class="dropdown-item" href="{{ logout_url }}"><i class="fas fa-power-off mr-2"></i>Logout</a>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</div>
+<!-- ============================================================== -->
+<!-- end navbar -->
+<!-- ============================================================== -->

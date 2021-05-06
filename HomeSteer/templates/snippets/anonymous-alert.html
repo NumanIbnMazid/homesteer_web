@@ -1,0 +1,6 @@
+{% if not request.user.is_authenticated %}
+<div class="alert alert-warning mt-2">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are <strong>{{user}}</strong> ! Please login to get full experience.
+</div>
+{% endif %}

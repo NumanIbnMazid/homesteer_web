@@ -1,0 +1,8 @@
+<form method="GET" action="{% url 'search:search-query' %}" class="navbar-form" role="search">
+    <div class="input-group add-on">
+        <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search for room" aria-label="Search" required>
+        <div class="input-group-btn">
+            <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+</form>

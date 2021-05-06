@@ -1,0 +1,174 @@
+{% url 'user_list' as user_list_url %}
+{% url 'rooms:room_create' as room_create_url %}
+{% url 'rooms:room_list' as room_list_url %}
+{% if is_member %}
+{% url 'rooms:room_detail' slug=member.room.slug as room_url %}
+{% url 'tracker:tracker_create' as tracker_create_url %}
+{% url 'tracker:meal_create' as meal_create_url %}
+{% url 'tracker:meal_update' slug=meal_slug as meal_update_url %}
+{% url 'tracker:cost_chart' as cost_chart_url %}
+{% url 'tracker:shopping_create' as shopping_create_url %}
+{% url 'tracker:monthly_shopping_create' as monthly_shopping_create_url %}
+{% url 'tracker:meal_chart' as meal_chart_url %}
+{% url 'tracker:shopping_chart' as shopping_chart_url %}
+{% url 'tracker:deposit_field_create' as deposit_field_create_url %}
+{% url 'tracker:deposit_chart' as deposit_chart_url %}
+{% url 'tracker:analytics' as analytics_url %}
+{% endif %}
+
+<!-- ============================================================== -->
+<!-- left sidebar -->
+<!-- ============================================================== -->
+<div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav flex-column">
+                    <li class="nav-divider">
+                        Menu
+                    </li>
+
+                    {% if is_member %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == room_url %} active {% endif %}" href="{{ room_url }}">
+                                <i class="fa fa-fw fa-rocket"></i>My Room
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if not is_member and not is_pending_member %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == room_create_url %} active {% endif %}" href="{{ room_create_url }}">
+                                <i class="fa fa-fw fa-rocket"></i>Create Room
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if is_member %}
+
+                        {% if not meal_slug == None %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == meal_update_url %} active {% endif %}" href="{{ meal_update_url }}">
+                                    <i class="fa fa-fw fa-rocket"></i>Meal Update
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == meal_create_url %} active {% endif %}" href="{{ meal_create_url }}">
+                                    <i class="fa fa-fw fa-rocket"></i>Meal Entry
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if room_setting.shopping_type == 0 %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == shopping_create_url %} active {% endif %}" href="{{ shopping_create_url }}">
+                                    <i class="fa fa-fw fa-rocket"></i>Shopping Entry
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        
+                        {% if is_modifier %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == tracker_create_url or request.path == monthly_shopping_create_url %}active{% endif %}" 
+                            href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-10" aria-controls="submenu-10">
+                                <i class="fas fa-f fa-folder"></i>
+                                Administrative Tasks
+                            </a>
+                            <div id="submenu-10" class="collapse submenu">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == tracker_create_url %} active {% endif %}" href="{{ tracker_create_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Cost Sector
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == deposit_field_create_url %} active {% endif %}" href="{{ deposit_field_create_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Cash Deposit Field
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == monthly_shopping_create_url %} active {% endif %}" href="{{ monthly_shopping_create_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Monthly Shopping
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        {% endif %}
+
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == cost_chart_url or request.path == meal_chart_url or request.path == shopping_chart_url or request.path == analytics_url %}active{% endif %}" 
+                            href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-11" aria-controls="submenu-11">
+                                <i class="fas fa-f fa-folder"></i>
+                                Costs & Charts
+                            </a>
+                            <div id="submenu-11" class="collapse submenu">
+                                <ul class="nav flex-column">
+                                    {% if is_maintainer %}
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == cost_chart_url %} active {% endif %}" href="{{ cost_chart_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Cost Chart
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == meal_chart_url %} active {% endif %}" href="{{ meal_chart_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Meal Chart
+                                        </a>
+                                    </li>
+                                    {% if is_maintainer %}
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == shopping_chart_url %} active {% endif %}" href="{{ shopping_chart_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Shopping Chart
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    {% if is_maintainer %}
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if request.path == deposit_chart_url %} active {% endif %}" href="{{ deposit_chart_url }}">
+                                            <i class="fa fa-fw fa-rocket"></i>Cash Deposit Chart
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    {% if is_manager %}
+                                        <li class="nav-item">
+                                            <a class="nav-link {% if request.path == analytics_url %} active {% endif %}" href="{{ analytics_url }}">
+                                                <i class="fa fa-fw fa-rocket"></i>Analytics
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </li>
+
+                    {% endif %}
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == room_list_url %} active {% endif %}" href="{{ room_list_url }}">
+                            {% if not is_member and not is_pending_member %}
+                                <i class="fa fa-fw fa-rocket"></i>Join Room
+                            {% else %}
+                                <i class="fa fa-fw fa-rocket"></i>All Rooms
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == user_list_url %} active {% endif %}" href="{{ user_list_url }}">
+                            <i class="fa fa-fw fa-rocket"></i>All Users
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- end left sidebar -->
+<!-- ============================================================== -->

@@ -1,0 +1,72 @@
+<li class="nav-item dropdown notification">
+    <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-bell"><sub class="text-dark">{{notifications.count}}</sub></i> <span class="indicator"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+        <li>
+            <div class="notification-title"> 
+                {% if notifications.count >= 2 %}
+                Notifications
+                {% else %}
+                Notification
+                {% endif %}
+            </div>
+            <div class="notification-list">
+                <div class="list-group">
+                    {% for notification in notifications %}
+                    <div class="list-group-item list-group-item-action active">
+                        <div class="notification-info">
+                            <a href="{% url 'profile_public' slug=notification.sender.user.profile.slug %}">
+                                <div class="notification-list-user-img">
+                                    {% include 'snippets/chunks/user/user-image.html' with instance=notification.sender.user class="user-avatar-md rounded-circle" %}
+                                </div>
+                            </a>
+                            <div class="notification-list-user-block">
+                                <span class="notification-list-user-name">
+                                    {{notification.sender.user.profile.get_smallname}}
+                                </span>
+                                {% if notification.notify_type == "join_room" %}
+                                You have a pending request to join room
+                                <a href="{% url 'rooms:room_detail' slug=request.user.member_request.room.slug %}">
+                                    "{{ request.user.member_request.room }}".
+                                </a> <br>
+                                <a href="{% url 'memberships:member_request_delete' slug=request.user.member_request.slug %}" class="btn btn-danger btn-xs">
+                                    Cancel Request
+                                </a>
+                                if you are willing to join another room.
+                                {% endif %}
+                                {% if notification.notify_type == "meal_update" %}
+                                claims a <span class="text-success">Meal Change</span> request to you. <br>
+                                <a href="{% url 'tracker:meal_update_request_confirm' slug=notification.identifier %}" class="btn btn-xs btn-rounded btn-light">
+                                    <i class="fas fa-eye text-primary"></i>
+                                </a>
+                                {% endif %}
+                                {% if notification.category == "message" %}
+                                    {% if notification.message %}
+                                    <span>{{ notification.message }}</span> <br>
+                                    <a href="{% url 'utils:notification_delete' slug=notification.slug %}" class="btn btn-xs btn-rounded btn-light">
+                                        <i class="fas fa-check text-success"></i>
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="notification-date">
+                                    {{notification.updated_at|timesince}} ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </li>
+        {% if notifications.count >= 1 %}
+        <li>
+            <div class="list-footer"> 
+                <a href="{% url 'utils:notification_list' %}">
+                    View all notifications
+                </a>
+            </div>
+        </li>
+        {% endif %}
+    </ul>
+</li>

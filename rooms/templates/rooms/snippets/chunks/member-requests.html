@@ -1,0 +1,54 @@
+{% load cool_paginate %}
+{% for member_request in member_requests %}
+<div class="card card-figure">
+    <!-- .card-figure -->
+    <figure class="figure text-center">
+        <!-- .figure-img -->
+        <div class="figure-img">
+            {% include 'snippets/chunks/user/user-image.html' with instance=member_request.user class="rounded-circle user-avatar-xl" %}
+            <div class="figure-description">
+                <p class="text-muted">
+                    <small>Sent at: 
+                        <span class="text-dark">{{ member_request.created_at|date:'Y-m-d' }}</span>
+                    </small>
+                </p>
+            </div>
+            <div class="figure-action">
+                <a href="{% url 'profile_public' slug=member_request.user.profile.slug %}" class="btn btn-block btn-sm btn-primary">
+                    View Profile
+                </a>
+            </div>
+        </div>
+        <!-- /.figure-img -->
+        <!-- .figure-caption -->
+        <figcaption class="figure-caption">
+            <h6 class="figure-title">
+                <p>{{ member_request.user.profile.get_smallname|truncatechars_html:15 }}</p>
+            </h6>
+            <a href="{% url 'memberships:member_request_confirm' slug=member_request.slug %}" class="btn btn-success btn-xs active">
+                Confirm
+            </a>
+            <a href="{% url 'memberships:member_request_delete' slug=member_request.slug %}" class="btn btn-danger btn-xs active">
+                Delete
+            </a>
+        </figcaption>
+        <!-- /.figure-caption -->
+    </figure>
+    <!-- /.card-figure -->
+</div>
+{% empty %}
+<span class="text-warning">No incoming requests to join !</span>
+{% endfor %}
+
+{% if member_requests_count > 7 %}
+<div class="">
+    {% cool_paginate page_obj=member_requests %}
+</div>
+{% endif %}
+{% if member_requests_count >= 1 %}
+<div class="text-right">
+    <button type="button" class="btn btn-danger btn-xs btn-block mt-2 mb-2" data-toggle="modal" data-target="#removeAllRequests">
+        Romove All
+    </button>
+</div>
+{% endif %}

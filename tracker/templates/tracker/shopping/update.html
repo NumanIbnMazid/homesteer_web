@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% if request.user.is_authenticated and is_member %}
+
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+
+{% url 'tracker:monthly_shopping_update' slug=object.slug as monthly_shopping_update_url %}
+
+{% if request.path == monthly_shopping_update_url %}
+Monthly Shopping Update of {{member.room}} [{% now "F Y" %}]
+{% else %}
+    {% if room_setting.shopping_type == 0 %}
+    Shopping Update of {{user.profile.get_smallname}} [{% now "F Y" %}]
+    {% else %}
+    Shopping Update of {{member.room}} [{% now "F Y" %}]
+    {% endif %}
+{% endif %}
+
+{% endblock %}{% endblock %}{% endblock %}
+
+{% block content %}
+
+{% url 'tracker:monthly_shopping_update' slug=object.slug as monthly_shopping_update_url %}
+
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        {% if is_creator %}
+        <a href="{% url 'rooms:managerial_setting' %}" class="btn btn-primary btn-xs">
+            Change Shopping Type <i class="fas fa-edit"></i>
+        </a>
+        {% endif %}
+        <div class="card">
+            <div class="card-body">
+                <div class="form">
+                    <form class="form" method="POST">
+                        {% csrf_token %}
+                        <fieldset>
+                            {% include 'snippets/form.html' %}
+                        </fieldset>
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary btn-xs" type="submit">
+                                Update Shopping <i class="fa fa-plus-circle"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if request.path == monthly_shopping_update_url %}
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        {% include 'tracker/shopping/snippets/list-manager-dependent.html' %}
+    </div>
+    {% else %}
+        {% if room_setting.shopping_type == 0 %}
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+            {% include 'tracker/shopping/snippets/list-member-dependent.html' %}
+        </div>
+        {% else %}
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+            {% include 'tracker/shopping/snippets/list-manager-dependent.html' %}
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+<!-- end: page -->
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% if request.user.is_authenticated %}
+{% block head_title %}{% block page_title %}{% block breadcrumb %}
+Confirm Meal Update Request of {{object.member.user.profile.get_smallname}}
+{% endblock %}{% endblock %}Page{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="form">
+                    <form class="form" method="POST">
+                        <p>
+                            Hello 
+                            <span class="text-dark">
+                                {{request.user.profile.get_smallname}}!
+                            </span><br>
+                            <span class="text-dark">{{meal_request.member.user.profile.get_smallname}}'s</span>
+                            meal number of
+                            <span class="text-success">{{meal.meal_date|date:"d, F, Y"}}</span>
+                            was 
+                            <span class="text-primary">
+                                {% if meal.meal_today == None %}
+                                Empty.
+                                {% else %}
+                                {{meal.meal_today}}.
+                                {% endif %}
+                            </span> <br>
+                            Recently he/she claims that his/her meal number of that day should change and it should be
+                            <span class="text-primary">{{meal_request.meal_should_be}}</span>. <br>
+                            <span class="text-dark">
+                                Please <b>Confirm Changes</b> if you agree with his/her proposal or <b>Deny</b>
+                                if you want to disagree.
+                            </span>
+                        </p>
+                        {% csrf_token %}
+                        <fieldset>
+                            {% include 'snippets/form.html' %}
+                        </fieldset>
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary btn-xs" type="submit">
+                                Confirm Changes <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% if not object == None %}
+                <a href="{% url 'tracker:meal_update_request_deny' slug=object.slug %}" class="btn btn-danger btn-xs">
+                    Deny <i class="fas fa-ban"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    You are not allowed to view this page because you are <strong>{{user}}</strong> !
+</div>
+{% endif %}
